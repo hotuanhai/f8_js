@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=<device-width>, initial-scale=1.0">
+        <title>BEM</title>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+        <link rel="stylesheet" href="./thuchanh/toast/toastStyle.css">
+    </head>
+    <body>
+        <div id="toast"></div>
+               
+        <div>
+            <div onclick="showSuccessToast()" class="btn btn--success">Show success toast</div>
+            <div onclick="showErrorToast()" class="btn btn--danger">Show danger toast</div>
+        </div>
+
+        <script>
+            function toast({title = '',message ='',type = 'info',duration = 3000}){
+                const main = document.getElementById(`toast`)
+                if(main){
+                    const toast = document.createElement(`div`)  
+                    //auto remove
+                    const autoremove = setTimeout(function(){
+                        main.removeChild(toast)
+                    },duration+1000)
+                    //onclick remove
+                    toast.onclick = function(e){
+                        if(e.target.closest(`.toast__close`)){
+                            main.removeChild(toast)
+                            clearTimeout(autoremove)
+                        }
+                    }          
+                    toast.classList.add(`toast`, `toast--${type}`)
+                    const delay = (duration/1000).toFixed(2)
+                    toast.style.animation= `slideInLeft 0.3s ease-in-out, fadeOut linear 1s ${delay}s forwards`
+                    const icons = {
+                        success: 'fas fa-check-circle', 
+                        info: 'fas fa-info-circle',
+                        warning: 'fas fa-exclamation-circle', 
+                        error: 'fas fa-exclamation-circle',
+                    }
+                    toast.innerHTML=`
+                    <div class="toast__icon">
+                        <i class="${icons[type]}"></i>
+                    </div>
+                    <div class="toast__body">
+                        <h3 class="toast__title">${title}</h3>
+                        <p class="toast__msg">${message}</p>
+                    </div>
+                    <div class="toast__close">
+                        <i class="fas fa-times"></i> 
+                    </div>
+                    `
+                    main.appendChild(toast)
+                }
+            }
+            toast({
+                title:'Success',
+                message: `May ket noi toi internet`,
+                type: `info`,
+                duration: 3000
+            })
+
+            function showSuccessToast(){
+                toast({
+                title:'Success',
+                message: `May ket noi toi internet`,
+                type: `success`,
+                duration: 3000
+            })
+            }
+            function showErrorToast(){
+                toast({
+                title:'error',
+                message: `May khong co ket noi toi internet`,
+                type: `error`,
+                duration: 3000
+            })
+            }
+        </script>
+    </body>
+</html>
